@@ -22,8 +22,11 @@ public class Ticket {
     public List<Integer> getBookedSeats(){ return bookedSeats;}
     public Bus getBus(){ return bus;}
     public int getNumberOfTickets(){ return numberOfTickets;}
-    private double getFare(){ return fare;}
-    private int getCustomerId(){ return customerId;}
+    public double getFare(){ return fare;}
+    public int getCustomerId(){ return customerId;}
+    public void setBookedSeats(int seatNo){
+        bookedSeats.add(seatNo);
+    }
 
     @Override
     public String toString() {

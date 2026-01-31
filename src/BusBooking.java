@@ -5,14 +5,18 @@ import java.util.Scanner;
 public class BusBooking {
     private List<Customer> customerList;
     private List<Bus> busList;
+    private List<Ticket> ticketList;
     private int customerIdCounter;
     private int busIdCounter;
+    private int ticketIdCount;
     private Customer currentCus;
     public BusBooking(){
         customerList = new ArrayList<>();
         busList = new ArrayList<>();
+        ticketList = new ArrayList<>();
         customerIdCounter = 1;
         busIdCounter = 1;
+        ticketIdCount = 1;
         currentCus = null;
         initializeBuses();
     }
@@ -61,6 +65,74 @@ public class BusBooking {
             System.out.println(buses);
         }
     }
+    public void bookingSeats(Scanner scan){
+        if(currentCus == null){
+            System.out.println("Please login first!");
+            return;
+        }
+        System.out.println("Available Buses are: ");
+        showAvailabeBuses();
+        System.out.println("Enter Bus ID: ");
+        int busId = scan.nextInt();
+        Bus selectedBus = null;
+        for(Bus bus : busList){
+            if(bus.getBusId() == busId){
+                selectedBus = bus;
+                break;
+            }
+        }
+        if(selectedBus == null){
+            System.out.println("Bus does not exists, please ensure bus ID.");
+            return;
+        }
+
+        System.out.println("Enter number of your Tickets: ");
+        int numOfTickets = scan.nextInt();
+        if(numOfTickets > selectedBus.getAvailableSeats()){
+            System.out.println("Not enough available seats!");
+            return;
+        }
+
+        System.out.println("Available Seats: ");
+        selectedBus.showAvailableSeats();
+
+        List<Integer> seatsToBook = new ArrayList<>();
+        for(int i = 0; i < numOfTickets; i++){
+            System.out.println("Enter seat number for ticket-" + (i + 1) + ": ");
+            int seatNo = scan.nextInt();
+            scan.nextLine();
+            if(seatNo <= 0 || seatNo > selectedBus.getTotalSeats()){
+                System.out.println("Invalid seat number!");
+                i--;
+                continue;
+            }
+
+            if(!selectedBus.bookSeat(seatNo - 1)){
+                System.out.println("Seat already booked. Try another seat.");
+                i--;
+                continue;
+            }
+            if(seatsToBook.contains(seatNo)){
+                System.out.println("You already selected this seat!");
+                i--;
+                continue;
+            }
+            seatsToBook.add(seatNo);
+        }
+        double fare = selectedBus.getbusType().equals("AC") ? 1000 : 500;
+        fare += selectedBus.getseatType().equals("Sleeper") ? 500 : 100;
+        double totalFare = numOfTickets * fare;
+
+        Ticket ticket = new Ticket(ticketIdCount++,selectedBus,numOfTickets,totalFare,currentCus.getCusId());
+        for(int seat : seatsToBook){
+            ticket.setBookedSeats(seat);
+        }
+        ticketList.add(ticket);
+        System.out.println("\nBooking successful!");
+        System.out.println("Ticket ID: " + ticket.getTicketId());
+        System.out.println("Total Fare: " + totalFare);
+        System.out.println("Booked Seats: " + seatsToBook);
+    }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         BusBooking system = new BusBooking();
@@ -69,6 +141,7 @@ public class BusBooking {
             System.out.println("1.Sign Up");
             System.out.println("2.Login");
             System.out.println("3.Show Available Buses");
+            System.out.println("4.Booking seats");
 
             System.out.print("\nEnter your Choice: ");
             int choice = scan.nextInt();
@@ -83,6 +156,8 @@ public class BusBooking {
                 case 3:
                     system.showAvailabeBuses();
                     break;
+                case 4:
+                    system.bookingSeats(scan);
             }
         }
     }
