@@ -65,7 +65,7 @@ public class BusBooking {
             System.out.println(buses);
         }
     }
-    public void bookingSeats(Scanner scan){
+    public void bookingTickets(Scanner scan){
         if(currentCus == null){
             System.out.println("Please login first!");
             return;
@@ -133,6 +133,34 @@ public class BusBooking {
         System.out.println("Total Fare: " + totalFare);
         System.out.println("Booked Seats: " + seatsToBook);
     }
+    public void cancelTickets(Scanner scan){
+        if(currentCus == null){
+            System.out.println("Please login first!");
+            return;
+        }
+        System.out.println("Enter ticket ID to cancel: ");
+        int ticketId = scan.nextInt();
+        scan.nextLine();
+
+        Ticket ticketToCancel = null;
+        for(Ticket ticket : ticketList){
+            if(ticket.getTicketId() == ticketId && ticket.getCustomerId() == currentCus.getCusId()){
+                ticketToCancel = ticket;
+            }
+        }
+        if(ticketToCancel == null){
+            System.out.println("No ticket found");
+            return;
+        }
+
+        Bus bus = ticketToCancel.getBus();
+        for(int seat : ticketToCancel.getBookedSeats()){
+            bus.cancelSeat(seat);
+        }
+        ticketList.remove(ticketToCancel);
+        System.out.println("Ticket cancel successfully!");
+        System.out.println("Refund of " + ticketToCancel.getFare() + " will be return 2 or 3 days.");
+    }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         BusBooking system = new BusBooking();
@@ -157,7 +185,7 @@ public class BusBooking {
                     system.showAvailabeBuses();
                     break;
                 case 4:
-                    system.bookingSeats(scan);
+                    system.bookingTickets(scan);
             }
         }
     }
