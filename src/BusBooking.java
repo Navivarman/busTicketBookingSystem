@@ -133,11 +133,31 @@ public class BusBooking {
         System.out.println("Total Fare: " + totalFare);
         System.out.println("Booked Seats: " + seatsToBook);
     }
+
+    public void viewTickets(){
+        if(currentCus == null){
+            System.out.println("Please login firest!");
+        }
+
+        System.out.println("\nYour Tickets: ");
+        boolean found = false;
+        for(Ticket ticket : ticketList){
+            if(ticket.getCustomerId() == currentCus.getCusId()){
+                System.out.println(ticket);
+                found = true;
+            }
+        }
+        if(!found){
+            System.out.println("No ticket found!");
+        }
+    }
     public void cancelTickets(Scanner scan){
         if(currentCus == null){
             System.out.println("Please login first!");
             return;
         }
+
+        viewTickets();
         System.out.println("Enter ticket ID to cancel: ");
         int ticketId = scan.nextInt();
         scan.nextLine();
@@ -170,6 +190,8 @@ public class BusBooking {
             System.out.println("2.Login");
             System.out.println("3.Show Available Buses");
             System.out.println("4.Booking seats");
+            System.out.println("5.View Tickets");
+            System.out.println("6.Cancel Tickets");
 
             System.out.print("\nEnter your Choice: ");
             int choice = scan.nextInt();
@@ -186,6 +208,13 @@ public class BusBooking {
                     break;
                 case 4:
                     system.bookingTickets(scan);
+                    break;
+                case 5:
+                    system.viewTickets();
+                    break;
+                case 6:
+                    system.cancelTickets(scan);
+                    break;
             }
         }
     }
