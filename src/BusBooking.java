@@ -181,6 +181,18 @@ public class BusBooking {
         System.out.println("Ticket cancel successfully!");
         System.out.println("Refund of " + ticketToCancel.getFare() + " will be return 2 or 3 days.");
     }
+    public void showBusSummary() {
+        System.out.println("\nBus Summary:");
+        for (Bus bus : busList) {
+            System.out.println("Bus ID: " + bus.getBusId());
+            System.out.println("Type: " + bus.getbusType());
+            System.out.println("Seat Type: " + bus.getseatType());
+            System.out.println("Total Seats: " + bus.getTotalSeats());
+            System.out.println("Booked Seats: " + (bus.getTotalSeats() - bus.getAvailableSeats()));
+            System.out.println("Available Seats: " + bus.getAvailableSeats());
+            System.out.println();
+        }
+    }
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         BusBooking system = new BusBooking();
@@ -192,6 +204,8 @@ public class BusBooking {
             System.out.println("4.Booking seats");
             System.out.println("5.View Tickets");
             System.out.println("6.Cancel Tickets");
+            System.out.println("7.Show Summary Bus");
+            System.out.println("8.Exit");
 
             System.out.print("\nEnter your Choice: ");
             int choice = scan.nextInt();
@@ -215,6 +229,15 @@ public class BusBooking {
                 case 6:
                     system.cancelTickets(scan);
                     break;
+                case 7:
+                    system.showBusSummary();
+                    break;
+                case 8:
+                    System.out.println("Thank you for using Bus Ticket Booking System!");
+                    scan.close();
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
             }
         }
     }
